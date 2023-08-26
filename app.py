@@ -26,7 +26,7 @@ def get_or_create_user(user_id):
     if not user:
         profile = line_bot_api.get_profile(user_id)
 
-        user = Users(id=user_id,nike_name=profile.display_name, image_url=profile.picture_url)
+        user = Users(id=user_id,nick_name=profile.display_name, image_url=profile.picture_url)
         db_session.add(user)
         db_session.commit()
     return user
