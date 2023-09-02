@@ -8,14 +8,17 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 from models.user import Users
-from models.database import db_session,init_db
+from database import db_session,init_db
 from models.product import Products
 from models.cart import Cart
+from config import Config
+from models.order import Orders
+from models.item import Items
 app = Flask(__name__)
 
 
-line_bot_api = LineBotApi('N44yZEfmA3bq6c/FGbOu2CfLZ13p0sO9nFcSuymeArXSc7uF8qOIhA6eZaATEu1K9RCVkV+6GmJBJouIH2NotgsPXjCvUwsgAKd5pATaHUtlaR0hg7R8+IzpJ7nsl1gcZW914FKo67sd5246tqrG8gdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('b3b067df5cd7d0d0496b8ed94a1dd873')
+line_bot_api = LineBotApi(Config.CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(Config.CHANNEL_SECRET)
 
 
 app = Flask(__name__)

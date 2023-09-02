@@ -1,0 +1,24 @@
+在 vscode console 打上 alembic init alembic進行初始化
+接著就會產生alembic 的資料夾和設定檔，然後修正
+
+38 sqlalchemy.url = sqlite:///lstore.db
+    
+到 alembic資料夾 env.py 的檔案
+加上
+import os
+import sys
+sys.path.append(os.getcwd())#才可以抓到專案的路徑
+17 # for 'autogenerate' support
+18 # from myapp import mymodel
+19 # target_metadata = mymodel.Base.metadata
+20 from app import *
+21 from database import Base
+22 target_metadata = Base.metadata
+
+回到 app.py 加入
+from models.order import Orders
+from models.item import Items
+
+接著在console 輸入 alembic revision --autogenerate就會自動新增和更新資料庫，接著會看到orders & items，接著在
+alembic 資料夾下  vision 底下可以看到產生的程式碼，確認table沒錯後在console輸入 alembic upgrade head ，檢查資料庫
+會發現全部都更新
