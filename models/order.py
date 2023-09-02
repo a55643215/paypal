@@ -8,7 +8,7 @@ class Orders(Base):
 
     id = Column(String,primary_key=True)
 
-    amout = Column(Integer)#記錄訂單金額
+    amount = Column(Integer)#記錄訂單金額
 
     transaction_id = Column(String) #串接line pay 的時候會用到
     is_pay = Column(Boolean, default=False) # 記錄訂單是否已經付款，預設False代表未付款
