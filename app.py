@@ -32,8 +32,7 @@ app = Flask(__name__)
 
 line_bot_api = LineBotApi(Config.CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(Config.CHANNEL_SECRET)
-
-
+ 
 app = Flask(__name__)
 
 #建立或取得user
