@@ -2,7 +2,7 @@ from sqlalchemy import Column,String, Integer
 from linebot.models import *
 from database import Base, db_session
 from urllib.parse import quote
-
+from urllib.parse import parse_qsl
 
 
 class Products(Base):
@@ -18,7 +18,7 @@ class Products(Base):
 
 #列出所有的產品
     @staticmethod
-    def list_all():
+    def list_all(event):
         products = db_session.query(Products).all()#抓取資料庫中所有產品的資料
 
         bubbles = []
