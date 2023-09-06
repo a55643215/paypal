@@ -98,33 +98,9 @@ def handle_message(event):
     elif message_text in ['我想訂購商品', "add"]:
         message = Products.list_all()
     #當user要訂購時就會執行這段程式
-    elif "i'd like to have" in message_text:
+    # elif "i'd like to have" in message_text:
+    #     message = cart.ordering(event)
 
-            # product_name = message_text.split(',')[0]#利用split(',')拆解並取得第[0]個位置的值
-            # # 例如 Coffee,i'd like to have經過split(',')拆解並取得第[0]個位置後就是 Coffee
-            # num_item = message_text.rsplit(':')[1]#同理產品就用(':')拆解取得第[1]個位置的值
-            # #資料庫搜尋是否有這個產品名稱
-            # product = db_session.query(Products).filter(Products.name.ilike(product_name)).first()
-            # #如果有這個產品名稱就會加入
-            # if product:
-
-            #     cart.add(product=product_name, num=num_item)
-            #     #然後利用confirm_template的格式詢問用戶是否還要加入？
-            #     confirm_template = ConfirmTemplate(
-            #         text='Sure, {} {}, anything else?'.format(num_item, product_name),
-            #         actions=[
-            #             MessageAction(label='Add', text='add'),
-            #             MessageAction(label="That's it", text="That's it")
-            #         ])
-
-            #     message = TemplateSendMessage(alt_text='anything else?', template=confirm_template)
-
-            # else:
-            #     #如果沒有找到產品名稱就會回給用戶沒有這個產品
-            #     message = TextSendMessage(text="Sorry, We don't have {}.".format(product_name))
-
-            # print(cart.bucket())
-        message = cart.ordering(event)
     elif message_text in ['my cart', 'cart', "that's it"]:#當出現'my cart', 'cart', "that's it"時
 
         if cart.bucket():#當購物車裡面有東西時
@@ -136,10 +112,28 @@ def handle_message(event):
         cart.reset()
 
         message = TextSendMessage(text='Your cart is empty now.')
+
+
+    #輸出message
     if message:
         line_bot_api.reply_message(
         event.reply_token,
         message) 
+
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    data = dict(parse_qsl(event.postback.data))
+
+    cart = Cart(user_id=event.source.user_id)
+    if data.get('action') == 'ordering':
+        message = cart.ordering(event)
+
+    if message:
+        line_bot_api.reply_message(
+        event.reply_token,
+        message)
+
+#支付命令
 @handler.add(PostbackEvent)
 def handle_postback(event):
     data = dict(parse_qsl(event.postback.data))#先將postback中的資料轉成字典
@@ -215,6 +209,8 @@ def handle_postback(event):
         line_bot_api.reply_message(event.reply_token, [message])
 
     return 'OK'
+
+#收據
 @app.route("/confirm")
 def confirm():
     transaction_id = request.args.get('transactionId')
@@ -259,21 +255,21 @@ def init_products():
             
             
 
+#小幫手功能
+# @handler.add(FollowEvent)
+# def handle_follow(event):
+#     welcome_msg = """Hello! 您好，歡迎您成為 Master Finance 的好友！
 
-@handler.add(FollowEvent)
-def handle_follow(event):
-    welcome_msg = """Hello! 您好，歡迎您成為 Master Finance 的好友！
+# 我是Master 財經小幫手 
 
-我是Master 財經小幫手 
+# -這裡有股票，匯率資訊喔~
+# -直接點選下方【圖中】選單功能
 
--這裡有股票，匯率資訊喔~
--直接點選下方【圖中】選單功能
+# -期待您的光臨！"""
 
--期待您的光臨！"""
-
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=welcome_msg))
+#     line_bot_api.reply_message(
+#         event.reply_token,
+#         TextSendMessage(text=welcome_msg))
 
 
 if __name__ == "__main__":

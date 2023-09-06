@@ -64,6 +64,7 @@ class Products(Base):
                             action=URIAction(label='Add to Cart',
                                              uri='line://oaMessage/{base_id}/?{message}'.format(base_id='@030clcsu',
                                                                                                 message=quote("{product}, I'd like to have:".format(product=product.name)))),
+                                             data='action=ordering'
                         )
                     ]
                 )
