@@ -18,7 +18,7 @@ class Products(Base):
 
 #列出所有的產品
     @staticmethod
-    def list_all(event):
+    def list_all():
         products = db_session.query(Products).all()#抓取資料庫中所有產品的資料
 
         bubbles = []
@@ -61,10 +61,10 @@ class Products(Base):
                         ButtonComponent(
                             style='primary',
                             color='#1DB446',
-                            action=URIAction(label='Add to Cart',
+                            action=URIAction(label='加入購物車',
                                              uri='line://oaMessage/{base_id}/?{message}'.format(base_id='@030clcsu',
-                                                                                                message=quote("{product}, I'd like to have:".format(product=product.name)))),
-                                             data='action=ordering'
+                                                                                                message=quote("{product}, 請輸入購買數量:".format(product=product.name)))),
+                                             
                         )
                     ]
                 )

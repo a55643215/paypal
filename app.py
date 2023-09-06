@@ -1,20 +1,20 @@
 from flask import Flask, request, abort
-from linebot.models import *
-from database import db_session
-from models.user import Users
-from line_bot_api import *
-from models.product import Products
-from sqlalchemy.sql.expression import text
+from urllib.parse import parse_qsl
 from database import db_session, init_db
+from sqlalchemy.sql.expression import text
+from config import Config
 
+from line_bot_api import *
+from linebot.models import *
+from models.user import Users
 from models.product import Products
 from models.cart import Cart
 from models.order import Orders
 from models.item import Items
-from config import Config
 from models.linepay import LinePay
-from urllib.parse import parse_qsl
+
 import uuid
+
 
 
  
@@ -96,10 +96,10 @@ def handle_message(event):
     if message_text == '@使用說明':
         about_us_event(event)
     elif message_text in ['我想訂購商品', "add"]:
-        message = Products.list_all(event)
+        message = Products.list_all()
     #當user要訂購時就會執行這段程式
-    # elif "i'd like to have" in message_text:
-    #     message = cart.ordering(event)
+    elif "請輸入購買數量" in message_text:
+        message = cart.ordering(event)
 
     elif message_text in ['my cart', 'cart', "that's it"]:#當出現'my cart', 'cart', "that's it"時
 
@@ -119,19 +119,6 @@ def handle_message(event):
         line_bot_api.reply_message(
         event.reply_token,
         message) 
-
-@handler.add(PostbackEvent)
-def handle_postback(event):
-    data = dict(parse_qsl(event.postback.data))
-
-    cart = Cart(user_id=event.source.user_id)
-    if data.get('action') == 'ordering':
-        message = cart.ordering(event)
-
-    if message:
-        line_bot_api.reply_message(
-        event.reply_token,
-        message)
 
 #支付命令
 @handler.add(PostbackEvent)
